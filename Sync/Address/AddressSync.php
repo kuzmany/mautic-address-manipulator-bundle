@@ -21,11 +21,13 @@ use Mautic\LeadBundle\Model\LeadModel;
 use MauticPlugin\MauticAddressManipulatorBundle\Exception\IntegrationDisabledException;
 use MauticPlugin\MauticAddressManipulatorBundle\Exception\SkipMappingException;
 use MauticPlugin\MauticAddressManipulatorBundle\Integration\AddressManipulatorSettings;
+use MauticPlugin\MauticAddressManipulatorBundle\Sync\Address\Compare\AddressCompare;
 use MauticPlugin\MauticAddressManipulatorBundle\Sync\Address\DTO\MatchedAddressDTO;
 use MauticPlugin\MauticAddressManipulatorBundle\Sync\Address\DTO\MatchedFieldsDTO;
 use MauticPlugin\MauticAddressManipulatorBundle\Sync\Address\DTO\MatchingAddressDTO;
 use MauticPlugin\MauticAddressManipulatorBundle\Sync\Address\Merger\AddressSyncMerger;
 use MauticPlugin\MauticAddressManipulatorBundle\Sync\Address\Validator\AddressSyncValidator;
+use MauticPlugin\MauticAddressManipulatorBundle\Sync\Logger\AddressSyncLogger;
 
 class AddressSync
 {
@@ -55,6 +57,11 @@ class AddressSync
     private $leadModel;
 
     /**
+     * @var AddressCompare
+     */
+    private $addressCompare;
+
+    /**
      * AddressSync constructor.
      *
      * @param AddressManipulatorSettings $addressManipulatorSettings
@@ -62,39 +69,68 @@ class AddressSync
      * @param LeadModel                  $leadModel
      * @param AddressSyncValidator       $addressSyncValidator
      * @param AddressSyncMerger          $addressSyncMerger
+     * @param AddressCompare             $addressCompare
      */
     public function __construct(
         AddressManipulatorSettings $addressManipulatorSettings,
         CompanyModel $companyModel,
         LeadModel $leadModel,
         AddressSyncValidator $addressSyncValidator,
-        AddressSyncMerger $addressSyncMerger
+        AddressSyncMerger $addressSyncMerger,
+        AddressCompare $addressCompare
     ) {
         $this->addressManipulatorSettings = $addressManipulatorSettings;
         $this->companyModel               = $companyModel;
         $this->addressSyncValidator       = $addressSyncValidator;
         $this->addressSyncMerger          = $addressSyncMerger;
         $this->leadModel                  = $leadModel;
+        $this->addressCompare = $addressCompare;
     }
 
     /**
      * @param Lead $lead
      *
      * @throws IntegrationDisabledException
+     * @throws SkipMappingException
      */
     public function companyAddressSync(Lead $lead)
     {
         if (!$this->addressManipulatorSettings->hasCompanyAddressSync()) {
-            throw new IntegrationDisabledException();
+            throw new IntegrationDisabledException('Company address sync disabled');
         }
+        $this->addressCompare->setLead($lead);
+        $primaryCompanyLeadEntity = $this->addressCompare->getPrimaryCompanyLeadEntity();
+        $company = $primaryCompanyLeadEntity->getCompany();
+
+        $fromAddressDTO = new MatchingAddressDTO($lead->getProfileFields());
+        $matchedFieldsDTO          = new MatchedFieldsDTO($this->addressManipulatorSettings->getSettings(), 'company');
+        $toAddressDTO = new MatchedAddressDTO($primaryCompanyLeadEntity->getCompany()->getProfileFields(), $matchedFieldsDTO, 'company');
+        $this->addressSyncValidator->validate($fromAddressDTO, $toAddressDTO);
+        $this->addressCompare->compareAddress($lead);
+
+        $dataToUpdate = $this->addressSyncMerger->dataToUpdate(
+            $fromAddressDTO,
+            $toAddressDTO
+        );
+
+        $this->companyModel->setFieldValues($company, $dataToUpdate);
+        $this->companyModel->saveEntity($company);
+
 
 
     }
 
-    public function contactAddressSync(Company $company)
+    /**
+     * @param Company           $company
+     *
+     * @param AddressSyncLogger $addressSyncLogger
+     *
+     * @throws IntegrationDisabledException
+     */
+    public function contactAddressSync(Company $company, AddressSyncLogger $addressSyncLogger)
     {
         if (!$this->addressManipulatorSettings->hasContactAddressSync()) {
-            throw new IntegrationDisabledException();
+            throw new IntegrationDisabledException('Contact address sync disabled');
         }
         $companyLeads = $this->companyModel->getCompanyLeadRepository()->findBy(['company' => $company]);
         /** @var CompanyLead $companyLead */
@@ -121,6 +157,7 @@ class AddressSync
                 $this->leadModel->saveEntity($lead);
 
             } catch (SkipMappingException $skipMappingException) {
+                $addressSyncLogger->log($skipMappingException->getMessage());
                 continue;
             }
         }

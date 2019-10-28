@@ -77,6 +77,14 @@ class AddressManipulatorSettings
     }
 
     /**
+     * @return bool
+     */
+    public function enabledDebugMode()
+    {
+        return (bool) ArrayHelper::getValue('debug_mode', $this->settings);
+    }
+
+    /**
      * @return array
      */
     public function getSettings()

@@ -19,6 +19,7 @@ use MauticPlugin\MauticAddressManipulatorBundle\Exception\SkipMappingException;
 use MauticPlugin\MauticAddressManipulatorBundle\Exception\SyncSettingException;
 use MauticPlugin\MauticAddressManipulatorBundle\Sync\Address\AddressSync;
 use MauticPlugin\MauticAddressManipulatorBundle\Sync\Domain\DomainSync;
+use MauticPlugin\MauticAddressManipulatorBundle\Sync\Logger\AddressSyncLogger;
 
 class SyncService
 {
@@ -33,48 +34,66 @@ class SyncService
     private $addressSync;
 
     /**
+     * @var AddressSyncLogger
+     */
+    private $addressSyncLogger;
+
+    /**
      * SyncService constructor.
      *
-     * @param DomainSync  $domainSync
-     * @param AddressSync $addressSync
+     * @param DomainSync        $domainSync
+     * @param AddressSync       $addressSync
+     * @param AddressSyncLogger $addressSyncLogger
      */
-    public function __construct(DomainSync $domainSync, AddressSync $addressSync)
+    public function __construct(DomainSync $domainSync, AddressSync $addressSync, AddressSyncLogger $addressSyncLogger)
     {
-        $this->domainSync = $domainSync;
-        $this->addressSync = $addressSync;
+        $this->domainSync        = $domainSync;
+        $this->addressSync       = $addressSync;
+        $this->addressSyncLogger = $addressSyncLogger;
     }
 
     /**
      * @param Lead $lead
-     *
-     * @throws IntegrationDisabledException
-     * @throws SyncSettingException
      */
     public function companyDomainSync(Lead $lead)
     {
         try {
             $this->domainSync->execute($lead);
         } catch (SkipMappingException $skipMappingException) {
-        }catch (IntegrationDisabledException $integrationDisabledException)
-        {
-        }catch (SyncSettingException $exception)
-        {
+            $this->addressSyncLogger->log($skipMappingException->getMessage());
+        } catch (IntegrationDisabledException $integrationDisabledException) {
+            $this->addressSyncLogger->log($integrationDisabledException->getMessage());
+        } catch (SyncSettingException $exception) {
+            $this->addressSyncLogger->log($exception->getMessage());
+
         }
 
     }
 
+    /**
+     * @param Lead $lead
+     */
     public function companyAddressSync(Lead $lead)
     {
-        $this->addressSync->companyAddressSync($lead);
+        try {
+            $this->addressSync->companyAddressSync($lead);
+        } catch (SkipMappingException $skipMappingException) {
+            $this->addressSyncLogger->log($skipMappingException->getMessage());
+        } catch (IntegrationDisabledException $integrationDisabledException) {
+            $this->addressSyncLogger->log($integrationDisabledException->getMessage());
+        }
+
     }
 
     /**
      * @param Company $company
-     *
-     * @throws IntegrationDisabledException
      */
     public function contactAddressSync(Company $company)
     {
-        $this->addressSync->contactAddressSync($company);
+        try {
+            $this->addressSync->contactAddressSync($company, $this->addressSyncLogger);
+        } catch (IntegrationDisabledException $integrationDisabledException) {
+            $this->addressSyncLogger->log($integrationDisabledException->getMessage());
+        }
     }
 }

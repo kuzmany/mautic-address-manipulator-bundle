@@ -24,7 +24,7 @@ return [
             'mautic.addressmanipulator.settings' => [
                 'class'     => \MauticPlugin\MauticAddressManipulatorBundle\Integration\AddressManipulatorSettings::class,
                 'arguments' => [
-                    'mautic.helper.integration'
+                    'mautic.helper.integration',
                 ],
             ],
 
@@ -32,7 +32,15 @@ return [
                 'class'     => \MauticPlugin\MauticAddressManipulatorBundle\Sync\SyncService::class,
                 'arguments' => [
                     'mautic.addressmanipulator.sync.domain',
-                    'mautic.addressmanipulator.sync.address'
+                    'mautic.addressmanipulator.sync.address',
+                    'mautic.addressmanipulator.sync.logger'
+                ],
+            ],
+            'mautic.addressmanipulator.sync.logger' => [
+                'class'     => \MauticPlugin\MauticAddressManipulatorBundle\Sync\Logger\AddressSyncLogger::class,
+                'arguments' => [
+                    'mautic.addressmanipulator.settings',
+                    'monolog.logger.mautic'
                 ],
             ],
 
@@ -43,7 +51,8 @@ return [
                     'mautic.lead.model.company',
                     'mautic.lead.model.lead',
                     'mautic.addressmanipulator.sync.address.validator',
-                    'mautic.addressmanipulator.sync.address.merger'
+                    'mautic.addressmanipulator.sync.address.merger',
+                    'mautic.addressmanipulator.sync.address.compare'
                 ],
             ],
             'mautic.addressmanipulator.sync.address.validator' => [
@@ -54,6 +63,14 @@ return [
             'mautic.addressmanipulator.sync.address.merger' => [
                 'class'     => \MauticPlugin\MauticAddressManipulatorBundle\Sync\Address\Merger\AddressSyncMerger::class,
                 'arguments' => [
+                ],
+            ],
+
+            'mautic.addressmanipulator.sync.address.compare' => [
+                'class'     => \MauticPlugin\MauticAddressManipulatorBundle\Sync\Address\Compare\AddressCompare::class,
+                'arguments' => [
+                    'mautic.lead.model.lead',
+                    'mautic.lead.model.company'
                 ],
             ],
 

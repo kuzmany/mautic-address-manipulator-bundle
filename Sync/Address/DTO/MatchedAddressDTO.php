@@ -13,49 +13,14 @@
 namespace MauticPlugin\MauticAddressManipulatorBundle\Sync\Address\DTO;
 
 
-class MatchedAddressDTO implements MatchingDTOInterface
+class MatchedAddressDTO extends AbstractAddressDTO
 {
-    /**
-     * @var string
-     */
-    private $address1;
-
-    /**
-     * @var string
-     */
-    private $address2;
-
-    /**
-     * @var string
-     */
-    private $city;
-
-    /**
-     * @var string
-     */
-    private $zip;
-
-    /**
-     * @var string
-     */
-    private $country;
-
-    /**
-     * @var string
-     */
-    private $state;
-
     /**
      * @var array
      */
     private $profileFields;
 
     private $object;
-
-    /**
-     * @var MatchedFieldsDTO
-     */
-    private $matchedFields;
 
     /**
      * @var
@@ -77,10 +42,10 @@ class MatchedAddressDTO implements MatchingDTOInterface
 
        $this->address1 = $this->getValue($this->matchedFieldsDTO->getAddress1());
        $this->address2 = $this->getValue($this->matchedFieldsDTO->getAddress2());
-       $this->city = $this->getValue($this->matchedFieldsDTO->getCity());
-       $this->zip = $this->getValue($this->matchedFieldsDTO->getZip());
-       $this->country = $this->getValue($this->matchedFieldsDTO->getCountry());
-       $this->state = $this->getValue($this->matchedFieldsDTO->getZip());
+       $this->city     = $this->getValue($this->matchedFieldsDTO->getCity());
+       $this->zipcode  = $this->getValue($this->matchedFieldsDTO->getZip());
+       $this->country  = $this->getValue($this->matchedFieldsDTO->getCountry());
+       $this->state    = $this->getValue($this->matchedFieldsDTO->getZip());
    }
 
     /**
@@ -92,56 +57,9 @@ class MatchedAddressDTO implements MatchingDTOInterface
     {
         return $alias && isset($this->profileFields[$alias]) ? $this->profileFields[$alias] : '';
     }
-    /**
-     * @return string
-     */
-    public function getAddress1()
-    {
-        return $this->address1;
-    }
 
     /**
-     * @return string
-     */
-    public function getAddress2()
-    {
-        return $this->address2;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCity()
-    {
-        return $this->city;
-    }
-
-    /**
-     * @return string
-     */
-    public function getZip()
-    {
-        return $this->zip;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCountry()
-    {
-        return $this->country;
-    }
-
-    /**
-     * @return string
-     */
-    public function getState()
-    {
-        return $this->state;
-    }
-
-    /**
-     * @return MatchedFieldsDTO
+     * @return mixed
      */
     public function getMatchedFields()
     {

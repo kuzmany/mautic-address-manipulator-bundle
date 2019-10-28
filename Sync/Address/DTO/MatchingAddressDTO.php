@@ -13,37 +13,8 @@
 namespace MauticPlugin\MauticAddressManipulatorBundle\Sync\Address\DTO;
 
 
-class MatchingAddressDTO implements MatchingDTOInterface
+class MatchingAddressDTO extends AbstractAddressDTO
 {
-    /**
-     * @var string
-     */
-    private $address1;
-
-    /**
-     * @var string
-     */
-    private $address2;
-
-    /**
-     * @var string
-     */
-    private $city;
-
-    /**
-     * @var string
-     */
-    private $zip;
-
-    /**
-     * @var string
-     */
-    private $country;
-
-    /**
-     * @var string
-     */
-    private $state;
 
     /**
      * @var array
@@ -62,8 +33,8 @@ class MatchingAddressDTO implements MatchingDTOInterface
 
        $this->address1 = $this->getValue('address1');
        $this->address2 = $this->getValue('address2');;
-       $this->city = $this->getValue('city');
-       $this->zip = $this->getValue('zip');
+       $this->city    = $this->getValue('city');
+       $this->zipcode = $this->getValue('zipcode');
        $this->country = $this->getValue('country');;
        $this->state = $this->getValue('state');;
 
@@ -80,54 +51,6 @@ class MatchingAddressDTO implements MatchingDTOInterface
     {
         $fieldAlias = $this->object.$alias;
         return isset($this->profileFields[$fieldAlias]) ? $this->profileFields[$fieldAlias] : '';
-    }
-
-    /**
-     * @return string
-     */
-    public function getAddress1()
-    {
-        return $this->address1;
-    }
-
-    /**
-     * @return string
-     */
-    public function getAddress2()
-    {
-        return $this->address2;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCity()
-    {
-        return $this->city;
-    }
-
-    /**
-     * @return string
-     */
-    public function getZip()
-    {
-        return $this->zip;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCountry()
-    {
-        return $this->country;
-    }
-
-    /**
-     * @return string
-     */
-    public function getState()
-    {
-        return $this->state;
     }
 
 }

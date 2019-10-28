@@ -21,7 +21,6 @@ use MauticPlugin\MauticAddressManipulatorBundle\Sync\Address\DTO\MatchingDTOInte
 class AddressSyncValidator
 {
 
-
     /**
      * @param MatchingAddressDTO $matchingAddressDTO
      * @param MatchedAddressDTO  $matchedAddressDTO
@@ -33,12 +32,14 @@ class AddressSyncValidator
         MatchedAddressDTO $matchedAddressDTO
     ) {
         if ($matchedAddressDTO->getAddress1()) {
-            throw new SkipMappingException();
+            throw new SkipMappingException(
+                sprintf("Address1 should be empty. Now it's %s", $matchedAddressDTO->getAddress1())
+            );
         }
 
-        if (!$this->emptyDTOValidation($matchedAddressDTO)) {
+        if (!$this->emptyAddress($matchedAddressDTO)) {
             if (!$this->sameValueDTOValidation($matchingAddressDTO, $matchedAddressDTO)) {
-                throw new SkipMappingException();
+                throw new SkipMappingException('Looks like address without address1 '. $matchingAddressDTO->getSearchKey().' doesn\'t match '.$matchedAddressDTO->getSearchKey());
             }
         }
     }
@@ -49,12 +50,12 @@ class AddressSyncValidator
      *
      * @return bool
      */
-    private function emptyDTOValidation(MatchingDTOInterface $matchDTO)
+    private function emptyAddress(MatchingDTOInterface $matchDTO)
     {
         if (!$matchDTO->getAddress1() &&
-            !$matchDTO->getAddress2() &&
             !$matchDTO->getZip() &&
             !$matchDTO->getCountry() &&
+            !$matchDTO->getState() &&
             !$matchDTO->getCity()
         ) {
             return true;
@@ -71,14 +72,20 @@ class AddressSyncValidator
      */
     private function sameValueDTOValidation(MatchingDTOInterface $from, MatchingDTOInterface $to)
     {
-        if(
+        // If not exist one of the search fields, stop
+        if (!$from->getCity() || !$from->getCountry() || $from->getZip()) {
+            return false;
+        }
+
+        if (
             $from->getCity() == $to->getCity() &&
             $from->getCountry() == $to->getCountry() &&
             $from->getZip() == $to->getZip() &&
             $from->getState() == $to->getState()
-        ){
+        ) {
             return true;
         }
+
         return false;
 
     }

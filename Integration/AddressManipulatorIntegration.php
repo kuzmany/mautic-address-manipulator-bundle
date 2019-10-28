@@ -58,6 +58,18 @@ class AddressManipulatorIntegration extends AbstractIntegration
     public function appendToForm(&$builder, $data, $formArea)
     {
         if ($formArea == 'features') {
+
+            $builder->add(
+                'degug_mode',
+                'yesno_button_group',
+                [
+                    'label' => 'mautic.integration.form.feature.debug_mode',
+                    'attr'  => [
+                    ],
+                    'data'       => isset($data['degug_mode']) ? $data['degug_mode'] : false
+                ]
+            );
+
             $builder->add(
                 'contact_address_sync',
                 'yesno_button_group',

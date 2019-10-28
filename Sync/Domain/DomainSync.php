@@ -84,7 +84,7 @@ class DomainSync
     public function execute(Lead $lead)
     {
         if (!$this->addressManipulatorSettings->hasDomainSync()) {
-            throw new IntegrationDisabledException();
+            throw new IntegrationDisabledException('Domain sync disabled');
         }
         /** @var Lead $lead */
         $lead = $this->leadModel->getEntity($lead->getId());
@@ -109,7 +109,7 @@ class DomainSync
     {
         $companySyncField = ArrayHelper::getValue('domain_field', $this->addressManipulatorSettings->getSettings());
         if (!$companySyncField) {
-            throw new SyncSettingException();
+            throw new SyncSettingException('Sync field for domain not exist');
         }
 
         return $companySyncField;
