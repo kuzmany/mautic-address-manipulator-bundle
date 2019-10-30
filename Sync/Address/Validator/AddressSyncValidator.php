@@ -33,7 +33,7 @@ class AddressSyncValidator
     ) {
         if ($matchedAddressDTO->getAddress1()) {
             throw new SkipMappingException(
-                sprintf("Address1 should be empty. Now it's %s", $matchedAddressDTO->getAddress1())
+                sprintf("Address1 for should be empty. Now it's %s", $matchedAddressDTO->getAddress1())
             );
         }
 
@@ -50,7 +50,7 @@ class AddressSyncValidator
      *
      * @return bool
      */
-    private function emptyAddress(MatchingDTOInterface $matchDTO)
+    public function emptyAddress(MatchingDTOInterface $matchDTO)
     {
         if (!$matchDTO->getAddress1() &&
             !$matchDTO->getZip() &&

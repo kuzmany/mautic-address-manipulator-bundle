@@ -57,14 +57,15 @@ class SyncService
      */
     public function companyDomainSync(Lead $lead)
     {
+        $logPrefix = 'Sync contact domain to company';
         try {
             $this->domainSync->execute($lead);
         } catch (SkipMappingException $skipMappingException) {
-            $this->addressSyncLogger->log($skipMappingException->getMessage());
+            $this->addressSyncLogger->log($skipMappingException->getMessage(), $logPrefix);
         } catch (IntegrationDisabledException $integrationDisabledException) {
-            $this->addressSyncLogger->log($integrationDisabledException->getMessage());
+            $this->addressSyncLogger->log($integrationDisabledException->getMessage(), $logPrefix);
         } catch (SyncSettingException $exception) {
-            $this->addressSyncLogger->log($exception->getMessage());
+            $this->addressSyncLogger->log($exception->getMessage(), $logPrefix);
 
         }
 
@@ -75,12 +76,13 @@ class SyncService
      */
     public function companyAddressSync(Lead $lead)
     {
+        $logPrefix = 'Sync contact address to company';
         try {
-            $this->addressSync->companyAddressSync($lead);
+            $this->addressSync->contactAddressToCompanyAddressSync($lead);
         } catch (SkipMappingException $skipMappingException) {
-            $this->addressSyncLogger->log($skipMappingException->getMessage());
+            $this->addressSyncLogger->log($skipMappingException->getMessage(), $logPrefix);
         } catch (IntegrationDisabledException $integrationDisabledException) {
-            $this->addressSyncLogger->log($integrationDisabledException->getMessage());
+            $this->addressSyncLogger->log($integrationDisabledException->getMessage(), $logPrefix);
         }
 
     }
@@ -91,7 +93,7 @@ class SyncService
     public function contactAddressSync(Company $company)
     {
         try {
-            $this->addressSync->contactAddressSync($company, $this->addressSyncLogger);
+            $this->addressSync->companyAddressToContactAddressSync($company, $this->addressSyncLogger);
         } catch (IntegrationDisabledException $integrationDisabledException) {
             $this->addressSyncLogger->log($integrationDisabledException->getMessage());
         }

@@ -16,7 +16,7 @@ namespace MauticPlugin\MauticAddressManipulatorBundle\Sync\Domain;
 use Mautic\LeadBundle\Entity\Lead;
 use MauticPlugin\MauticAddressManipulatorBundle\Exception\SkipMappingException;
 
-class ValidationSync
+class ValidationDomainSync
 {
     /**
      * @param Lead  $lead
@@ -28,19 +28,19 @@ class ValidationSync
     public function validationByLead(Lead $lead, array $excludeDomains = [])
     {
         if ($lead->isAnonymous()) {
-            throw new SkipMappingException();
+            throw new SkipMappingException('Contact '.$lead->getId().' is anonymous');
         }
 
         if (empty($lead->getEmail())) {
-            throw new SkipMappingException();
+            throw new SkipMappingException('Contact '.$lead->getId().' has not email address in profile.');
         }
 
         if (!$domain = self::domainExists($lead->getEmail())) {
-            throw new SkipMappingException();
+            throw new SkipMappingException('Not find domain in email address '.$lead->getEmail().' ');
         }
         foreach ($excludeDomains as $excludeDomain) {
             if (fnmatch($excludeDomain, $domain)) {
-                throw new SkipMappingException();
+                throw new SkipMappingException(sprintf("Domain %s exist on blacklist. Can't be processed", $domain));
             }
         }
     }

@@ -86,7 +86,7 @@ return [
                 ],
             ],
             'mautic.addressmanipulator.sync.domain.validation' => [
-                'class'     => \MauticPlugin\MauticAddressManipulatorBundle\Sync\Domain\ValidationSync::class,
+                'class'     => \MauticPlugin\MauticAddressManipulatorBundle\Sync\Domain\ValidationDomainSync::class,
                 'arguments' => [
                 ],
             ],

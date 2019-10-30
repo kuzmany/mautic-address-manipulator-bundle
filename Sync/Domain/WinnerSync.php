@@ -28,8 +28,8 @@ class WinnerSync
      */
     public function getWinnerDomain(array $leadCompanies, Lead $lead)
     {
-        if (!$leadDomain = ValidationSync::domainExists($lead->getEmail())) {
-            throw new SkipMappingException();
+        if (!$leadDomain = ValidationDomainSync::domainExists($lead->getEmail())) {
+            throw new SkipMappingException('Not find domain in email address '.$lead->getEmail().' ');
         }
 
         // If just one company exists
@@ -39,7 +39,7 @@ class WinnerSync
             if ($leadCompany->getLead()->getId() == $lead->getId()) {
                 return $leadDomain;
             }
-            throw new SkipMappingException();
+            throw new SkipMappingException('Wrong merge. Company '.$leadCompany->getCompany()->getName().' assigned to '.$lead->getId().' doesn\'t exist.');
         }
 
         return $this->winnerFromDomains($leadCompanies, $leadDomain);
@@ -57,13 +57,13 @@ class WinnerSync
         /** @var CompanyLead $leadCompany */
         $domains = [];
         foreach ($leadCompanies as $leadCompany) {
-            if ($domain = ValidationSync::domainExists($leadCompany->getLead()->getEmail())) {
+            if ($domain = ValidationDomainSync::domainExists($leadCompany->getLead()->getEmail())) {
                 $domains[$domain][] = 1;
             }
         }
 
         if (!isset($domains[$leadDomain])) {
-            throw new SkipMappingException();
+            throw new SkipMappingException('Error during sync company domain');
         }
 
         $winnerCount = array_sum($domains[$leadDomain]);
@@ -72,7 +72,7 @@ class WinnerSync
         foreach ($domains as $domain=>$values) {
             $count = array_sum($domains[$domain]);
             if ($count >= $winnerCount) {
-                throw new SkipMappingException();
+                throw new SkipMappingException('Looks like exists contacts assigned to company with more domain priority like actual domain '.$leadDomain);
             }
         }
 

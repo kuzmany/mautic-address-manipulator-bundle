@@ -130,6 +130,9 @@ class AddressCompare
                 $leads[$matchingAddress->getSearchKey()][] = $leadFromPrimaryCompany;
             }
         }
+        if (empty($leads)) {
+            throw new SkipMappingException('Didn\'t find any address for company'.$this->primaryCompanyLeadEntity->getCompany()->getId());
+        }
         return $leads;
     }
 

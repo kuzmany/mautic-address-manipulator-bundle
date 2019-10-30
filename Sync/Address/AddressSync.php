@@ -93,7 +93,7 @@ class AddressSync
      * @throws IntegrationDisabledException
      * @throws SkipMappingException
      */
-    public function companyAddressSync(Lead $lead)
+    public function contactAddressToCompanyAddressSync(Lead $lead)
     {
         if (!$this->addressManipulatorSettings->hasCompanyAddressSync()) {
             throw new IntegrationDisabledException('Company address sync disabled');
@@ -127,10 +127,10 @@ class AddressSync
      *
      * @throws IntegrationDisabledException
      */
-    public function contactAddressSync(Company $company, AddressSyncLogger $addressSyncLogger)
+    public function companyAddressToContactAddressSync(Company $company, AddressSyncLogger $addressSyncLogger)
     {
         if (!$this->addressManipulatorSettings->hasContactAddressSync()) {
-            throw new IntegrationDisabledException('Contact address sync disabled');
+            throw new IntegrationDisabledException('Company address to contact sync disabled');
         }
         $companyLeads = $this->companyModel->getCompanyLeadRepository()->findBy(['company' => $company]);
         /** @var CompanyLead $companyLead */
@@ -157,7 +157,7 @@ class AddressSync
                 $this->leadModel->saveEntity($lead);
 
             } catch (SkipMappingException $skipMappingException) {
-                $addressSyncLogger->log($skipMappingException->getMessage());
+                $addressSyncLogger->log($skipMappingException->getMessage(), 'Sync company address to contact');
                 continue;
             }
         }

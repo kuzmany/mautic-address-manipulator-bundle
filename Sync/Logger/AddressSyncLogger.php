@@ -43,8 +43,11 @@ class AddressSyncLogger
     /**
      * @param string $message
      */
-    public function log($message)
+    public function log($message, $prefix = '')
     {
+        if ($prefix) {
+            $message = sprintf("%s: %s", $prefix, $message);
+        }
         if ('dev' === MAUTIC_ENV) {
             $this->logger->debug($message);
         }else if ($this->addressManipulatorSettings->enabledDebugMode()) {

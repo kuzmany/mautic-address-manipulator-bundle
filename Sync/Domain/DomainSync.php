@@ -31,7 +31,7 @@ class DomainSync
     private $addressManipulatorSettings;
 
     /**
-     * @var ValidationSync
+     * @var ValidationDomainSync
      */
     private $validationSync;
 
@@ -54,14 +54,14 @@ class DomainSync
      * DomainSync constructor.
      *
      * @param AddressManipulatorSettings $addressManipulatorSettings
-     * @param ValidationSync             $validationSync
+     * @param ValidationDomainSync       $validationSync
      * @param WinnerSync                 $winnerSync
      * @param CompanyModel               $companyModel
      * @param LeadModel                  $leadModel
      */
     public function __construct(
         AddressManipulatorSettings $addressManipulatorSettings,
-        ValidationSync $validationSync,
+        ValidationDomainSync $validationSync,
         WinnerSync $winnerSync,
         CompanyModel $companyModel,
         LeadModel $leadModel
@@ -133,7 +133,7 @@ class DomainSync
         }
 
         $leadCompanies = $this->companyModel->getCompanyLeadRepository()->findBy(
-            ['company' => $company, 'primary' => 1]
+            ['company' => $company]
         );
 
         $valueTosync   = $this->winnerSync->getWinnerDomain($leadCompanies, $lead);
