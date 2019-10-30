@@ -2,6 +2,10 @@
 
 This plugin require https://github.com/mautic/mautic/pull/7977. This PR add event on contact save.   
 
+### Debug mode
+
+Enable debug mode add logs about sync to System Info > Log
+
 ### Company domain sync
 - require enabled service and field to sync domain/domains blacklist in plugin settings 
 
@@ -22,10 +26,8 @@ Loop through all company contacts and sync address to contact based on plugin se
     
 ##### Sync contact address to company address
 
-Loop through all company contacts and sync address to contact based on plugin settings.
-
+Loop through all company contacts and sync address to company based on plugin settings and own logic criteria.
  
-
 ### Icons
 
 <div>Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a>
