@@ -2,6 +2,22 @@
 
 This plugin require https://github.com/mautic/mautic/pull/7977. This PR add event on contact save.   
 
+## Installation
+
+### Manual
+
+1. Use last version
+2. Unzip files to plugins/MauticAddressManipulatorBundle
+3. Clear cache (app/cache/prod/)
+4. Go to /s/plugins/reload
+
+## Usage
+
+1. Go to Mautic > Settings > Plugins
+2. You should see new Address Manipulator
+3. Enable it
+4. Enable feature what you want to use
+
 ### Debug mode
 
 Enable debug mode add logs about sync to System Info > Log
