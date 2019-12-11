@@ -126,6 +126,10 @@ class DomainSync
         /** @var CompanyLead $leadPrimaryCompany */
         $leadPrimaryCompany = $this->companyModel->getCompanyLeadRepository()->findOneBy(['lead' => $lead, 'primary' => 1]);
 
+        if (!$leadPrimaryCompany) {
+            throw new SkipMappingException();
+        }
+
         $company = $leadPrimaryCompany->getCompany();
         $company = $this->companyModel->getEntity($company->getId());
         if ($company->getFieldValue($syncField)) {
