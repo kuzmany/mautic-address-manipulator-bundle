@@ -39,6 +39,10 @@ class AddressSyncMerger
             $toUpdate[$fields->getCity()] = $matchingCompanyAddressDTO->getCity();
         }
 
+        if ($fields->getZip() && $matchingCompanyAddressDTO->getZip()) {
+            $toUpdate[$fields->getZip()] = $matchingCompanyAddressDTO->getZip();
+        }
+
         if ($fields->getCountry() && $matchingCompanyAddressDTO->getCountry()) {
             $toUpdate[$fields->getCountry()] = $matchingCompanyAddressDTO->getCountry();
         }
