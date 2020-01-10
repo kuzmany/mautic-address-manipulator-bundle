@@ -132,8 +132,8 @@ class DomainSync
 
         $company = $leadPrimaryCompany->getCompany();
         $company = $this->companyModel->getEntity($company->getId());
-        if ($company->getFieldValue($syncField)) {
-            throw new SkipMappingException();
+        if ($domain = $company->getFieldValue($syncField)) {
+            throw new SkipMappingException(sprintf("Domain already exists:%s", $domain));
         }
 
         $leadCompanies = $this->companyModel->getCompanyLeadRepository()->findBy(
