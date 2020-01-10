@@ -38,7 +38,7 @@ class MatchedFieldsDTO extends AbstractAddressDTO
        $this->address1 = $this->getValue('address1');
        $this->address2 = $this->getValue('address2');
        $this->city     = $this->getValue('city');
-       $this->zipcode  = $this->getValue('zipcode');
+       $this->zipcode  = $this->getValue('zip');
        $this->country  = $this->getValue('country');
        $this->state    = $this->getValue('state');
    }

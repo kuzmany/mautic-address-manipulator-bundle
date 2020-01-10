@@ -12,6 +12,7 @@
 namespace MauticPlugin\MauticAddressManipulatorBundle\EventListener;
 
 use Mautic\CoreBundle\EventListener\CommonSubscriber;
+use Mautic\LeadBundle\Event\LeadChangeCompanyEvent;
 use Mautic\LeadBundle\Event\LeadEvent;
 use Mautic\LeadBundle\LeadEvents;
 use MauticPlugin\MauticAddressManipulatorBundle\Sync\SyncService;
@@ -40,20 +41,28 @@ class LeadSubscriber extends CommonSubscriber
     public static function getSubscribedEvents()
     {
         return [
-            LeadEvents::ON_LEAD_DETACH => ['onLeadDetach', 0],
+            LeadEvents::LEAD_COMPANY_CHANGE => ['onLeadCompanyChange', 0],
+          //  LeadEvents::LEAD_POST_SAVE => ['onLeadPostSave', 0],
         ];
     }
 
     /**
-     * @param LeadEvent $event
-     *
-     * @throws \MauticPlugin\MauticAddressManipulatorBundle\Exception\IntegrationDisabledException
-     * @throws \MauticPlugin\MauticAddressManipulatorBundle\Exception\SyncSettingException
+     * @param LeadChangeCompanyEvent $event
      */
-    public function onLeadDetach(LeadEvent $event)
+    public function onLeadCompanyChange(LeadChangeCompanyEvent $event)
     {
         $this->syncService->companyAddressSync($event->getLead());
         $this->syncService->companyDomainSync($event->getLead());
     }
+
+    /**
+     * @param LeadEvent $event
+     */
+    public function onLeadPostSave(LeadEvent $event)
+    {
+        $this->syncService->companyAddressSync($event->getLead());
+        $this->syncService->companyDomainSync($event->getLead());
+    }
+
 
 }

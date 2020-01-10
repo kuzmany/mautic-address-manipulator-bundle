@@ -100,7 +100,7 @@ abstract class AbstractAddressDTO implements MatchingDTOInterface
     public function hasAddressKeyForSearch()
     {
         // If not exist one of the search fields, stop
-        if (!$this->getAddress1() || !$this->getCity() || !$this->getCountry() || !$this->getZip() || !$this->getState()) {
+        if (!$this->getAddress1() || !$this->getCity() || !$this->getCountry() || !$this->getZip()) {
             return false;
         }
 

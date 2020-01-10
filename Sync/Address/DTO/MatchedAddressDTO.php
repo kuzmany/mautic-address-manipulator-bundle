@@ -45,7 +45,7 @@ class MatchedAddressDTO extends AbstractAddressDTO
        $this->city     = $this->getValue($this->matchedFieldsDTO->getCity());
        $this->zipcode  = $this->getValue($this->matchedFieldsDTO->getZip());
        $this->country  = $this->getValue($this->matchedFieldsDTO->getCountry());
-       $this->state    = $this->getValue($this->matchedFieldsDTO->getZip());
+       $this->state    = $this->getValue($this->matchedFieldsDTO->getState());
    }
 
     /**
@@ -59,7 +59,7 @@ class MatchedAddressDTO extends AbstractAddressDTO
     }
 
     /**
-     * @return mixed
+     * @return MatchedFieldsDTO
      */
     public function getMatchedFields()
     {
