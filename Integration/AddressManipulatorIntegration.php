@@ -60,7 +60,7 @@ class AddressManipulatorIntegration extends AbstractIntegration
         if ($formArea == 'features') {
 
             $builder->add(
-                'degug_mode',
+                'debug_mode',
                 'yesno_button_group',
                 [
                     'label' => 'mautic.integration.form.feature.debug_mode',
