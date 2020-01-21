@@ -120,7 +120,9 @@ class AddressSyncCommand extends ModeratedCommand
 
         /** @var Lead $contact */
         foreach ($contacts as $contact) {
-            $this->syncService->companyAddressSync($contact);
+            if (!$contact->isAnonymous()) {
+                $this->syncService->companyAddressSync($contact);
+            }
         }
 
         $output->writeln(

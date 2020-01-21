@@ -31,6 +31,13 @@ class AddressSyncValidator
         MatchingAddressDTO $matchingAddressDTO,
         MatchedAddressDTO $matchedAddressDTO
     ) {
+
+        if ($this->emptyAddress($matchingAddressDTO)) {
+            throw new SkipMappingException(
+                "Nothing to sync. Contact without address"
+            );
+        }
+
         if ($matchedAddressDTO->getAddress1()) {
             throw new SkipMappingException(
                 sprintf("Address1 for should be empty. Now it's %s", $matchedAddressDTO->getAddress1())
