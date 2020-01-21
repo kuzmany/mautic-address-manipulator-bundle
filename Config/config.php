@@ -96,6 +96,17 @@ return [
                 ],
             ],
         ],
+        'commands'     => [
+            'mautic.addressmanipulator.command.sync' => [
+                'class'     => \MauticPlugin\MauticAddressManipulatorBundle\Command\AddressSyncCommand::class,
+                'arguments' => [
+                    'mautic.lead.model.lead',
+                    'mautic.addressmanipulator.sync',
+                    'translator'
+                ],
+                'tag'       => 'console.command',
+            ],
+        ],
         'integrations' => [
             'mautic.integration.addressmanipulator' => [
                 'class'     => \MauticPlugin\MauticAddressManipulatorBundle\Integration\AddressManipulatorIntegration::class,

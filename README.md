@@ -50,6 +50,13 @@ Loop through all company contacts and sync address to contact based on plugin se
 
 Loop through all company contacts and sync address to company based on plugin settings and own logic criteria.
  
+#### Command
+
+`php app/console mautic:address:manipulator:sync`
+
+- --start-datetime - use 'Y-m-d H:i:s' format like '2018-12-24 20:30:00' or something like '-10 minutes - default -15 minutes
+- --end-datetime - use 'Y-m-d H:i:s' format like '2018-12-24 20:30:00' or something like '-10 minutes - default now
+ 
 ### Icons
 
 <div>Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a>

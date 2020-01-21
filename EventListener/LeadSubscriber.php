@@ -61,7 +61,6 @@ class LeadSubscriber extends CommonSubscriber
     public function onLeadPostSave(LeadEvent $event)
     {
         $this->syncService->companyAddressSync($event->getLead());
-        $this->syncService->companyDomainSync($event->getLead());
     }
 
 

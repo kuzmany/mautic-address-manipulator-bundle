@@ -115,9 +115,6 @@ class AddressSync
 
         $this->companyModel->setFieldValues($company, $dataToUpdate);
         $this->companyModel->saveEntity($company);
-
-
-
     }
 
     /**
